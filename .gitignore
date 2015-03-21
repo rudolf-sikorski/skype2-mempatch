@@ -1,0 +1,7 @@
+*.o
+*~
+*.autosave
+*.pro.user
+*.pro.user.*
+/skype2-mempatch
+
