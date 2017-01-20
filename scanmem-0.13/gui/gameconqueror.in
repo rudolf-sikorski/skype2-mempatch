@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DATADIR=@PKGDATADIR@
+
+exec gksu --description "GameConqueror" "python -OO $DATADIR/GameConqueror.py"

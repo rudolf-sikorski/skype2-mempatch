@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2015, Rudolf Sikorski <rudolf.sikorski@freenet.de>
+   Copyright (C) 2015-2017, Rudolf Sikorski <rudolf.sikorski@freenet.de>
 
    This file is part of the `skype2-mempatch' program.
 
@@ -18,9 +18,6 @@
 */
 
 /*
-    WARNING: Scanmem requred for this software!
-    See https://github.com/scanmem/scanmem
-
     USAGE:
     1. Run Skype 2.2.0.35
     2. Wait login window
@@ -60,8 +57,8 @@ int main(int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "# skype2-mempatch version 0.1 alpha\n");
-    fprintf(stderr, "# Copyright (C) 2015, Rudolf Sikorski <rudolf.sikorski@freenet.de>\n");
+    fprintf(stderr, "# skype2-mempatch version 0.2 alpha\n");
+    fprintf(stderr, "# Copyright (C) 2015-2017, Rudolf Sikorski <rudolf.sikorski@freenet.de>\n");
     fprintf(stderr, "\n");
     fflush(stderr);
 
@@ -86,7 +83,8 @@ int main(int argc, char * argv[])
             exit(EXIT_FAILURE);
 
         /* Run scanmem */
-        if(execlp("scanmem", "scanmem", argv[1], (char *) NULL) == -1)
+        int scanmem_main(int, char **);
+        if(scanmem_main(argc, argv))
             exit(EXIT_FAILURE);
 
         close(pipe_to[0]);

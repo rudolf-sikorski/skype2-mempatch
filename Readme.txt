@@ -1,8 +1,5 @@
 skype2-mempatch version 0.1 alpha
-Copyright (C) 2015, Rudolf Sikorski <rudolf.sikorski@freenet.de>
-
-WARNING: Scanmem requred for this software!
-See https://github.com/scanmem/scanmem
+Copyright (C) 2015-2017, Rudolf Sikorski <rudolf.sikorski@freenet.de>
 
 USAGE:
 1. Run Skype 2.2.0.35
