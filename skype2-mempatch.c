@@ -19,16 +19,20 @@
 
 /*
     USAGE:
-    1. Run Skype 2.2.0.35
+    1. Run Skype 2.2.0.35 or another unsupported version
     2. Wait login window
-    3. Run skype2-mempatch `pidof skype`
-    4. Enter username and password, check 'Sign me in when Skype starts'
-    5. After Skype signing in, close skype or wait of crash :)
-    6. Restart Skype
+    3. Enter username and password, check 'Sign me in when Skype starts'
+    4. Run skype2-mempatch $(pidof skype) '2.2.0.35' '8.10.0.9'
+       where '2.2.0.35' - our Skype version, '8.10.0.9' - latest version for Windows
+    5. Click 'Sign in'
+    6. After Skype signing in, close skype or wait of crash :)
+    7. Restart Skype
 */
 
-#define REPLACE_BEFORE  "2.2.0.35"
-#define REPLACE_AFTER   "4.3.0.37"
+#define PROGRAM_NAME    (argv[0])
+#define TARGET_PID      (argv[1])
+#define REPLACE_BEFORE  (argv[2])
+#define REPLACE_AFTER   (argv[3])
 
 #include <sys/wait.h>
 #include <stdio.h>
@@ -41,9 +45,9 @@ int main(int argc, char * argv[])
 {
     int pipe_to[2], pipe_from[2];
     pid_t cpid;
-    if(argc != 2)
+    if(argc != 4)
     {
-        fprintf(stderr, "Usage: %s <pid>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <pid> <old_version_string> <new_version_string>\n", PROGRAM_NAME);
         exit(EXIT_FAILURE);
     }
     if(pipe(pipe_to) == -1)
@@ -57,7 +61,7 @@ int main(int argc, char * argv[])
         exit(EXIT_FAILURE);
     }
 
-    fprintf(stderr, "# skype2-mempatch version 0.2 alpha\n");
+    fprintf(stderr, "# skype2-mempatch version 0.3 alpha\n");
     fprintf(stderr, "# Copyright (C) 2015-2017, Rudolf Sikorski <rudolf.sikorski@freenet.de>\n");
     fprintf(stderr, "\n");
     fflush(stderr);
@@ -69,6 +73,10 @@ int main(int argc, char * argv[])
     }
     if(cpid == 0) /* Child process */
     {
+        char * scanmem_argv[2];
+        scanmem_argv[0] = PROGRAM_NAME;
+        scanmem_argv[1] = TARGET_PID;
+
         close(STDIN_FILENO);
         close(STDOUT_FILENO);
         close(STDERR_FILENO);
@@ -84,7 +92,7 @@ int main(int argc, char * argv[])
 
         /* Run scanmem */
         int scanmem_main(int, char **);
-        if(scanmem_main(argc, argv))
+        if(scanmem_main(sizeof(scanmem_argv) / sizeof(char *), scanmem_argv))
             exit(EXIT_FAILURE);
 
         close(pipe_to[0]);
@@ -156,7 +164,7 @@ int main(int argc, char * argv[])
         fflush(pipefile);
 
         /* Read response */
-        i = 0, j = 0, flag = 0;
+        i = j = flag = 0;
         while(read(pipe_from[0], & chr, 1) > 0)
         {
             write(STDERR_FILENO, & chr, 1);
